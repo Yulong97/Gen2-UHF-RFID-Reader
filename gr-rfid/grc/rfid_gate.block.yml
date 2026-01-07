@@ -1,0 +1,25 @@
+id: rfid_gate
+label: gate
+category: '[rfid]'
+
+templates:
+  imports: from gnuradio import rfid
+  make: rfid.gate(${sample_rate})
+
+parameters:
+- id: sample_rate
+  label: Sample Rate
+  dtype: int
+  default: 2000000
+
+inputs:
+- label: in
+  domain: stream
+  dtype: complex
+
+outputs:
+- label: out
+  domain: stream
+  dtype: complex
+
+file_format: 1

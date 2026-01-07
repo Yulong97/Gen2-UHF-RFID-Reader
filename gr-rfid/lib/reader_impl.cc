@@ -1,16 +1,16 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2015 <Nikos Kargas (nkargas@isc.tuc.gr)>.
+ * Copyright 2015 <Nikos Kargas (nkargas@isc.tuc.gr)>. 
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
+ * any later version. 
  * 
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU General Public License for more details. 
  * 
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.  If not, write to
@@ -24,7 +24,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "reader_impl.h"
-#include "rfid/global_vars.h"
+#include "gnuradio/rfid/global_vars.h"
 #include <sys/time.h>
 
 namespace gr {
@@ -46,7 +46,7 @@ namespace gr {
               gr::io_signature::make( 1, 1, sizeof(float)))
     {
 
-      GR_LOG_INFO(d_logger, "Block initialized");
+      d_logger->info( "Block initialized");
 
       sample_d = 1.0/dac_rate * pow(10,6);
 
@@ -59,11 +59,11 @@ namespace gr {
       n_delim_s = DELIM_D / sample_d;
       n_trcal_s = TRCAL_D / sample_d;
 
-      GR_LOG_INFO(d_logger, "Number of samples data 0 : " << n_data0_s);
-      GR_LOG_INFO(d_logger, "Number of samples data 1 : " << n_data1_s);
-      GR_LOG_INFO(d_logger, "Number of samples cw : "     << n_cw_s);
-      GR_LOG_INFO(d_logger, "Number of samples delim : "  << n_delim_s);
-      GR_LOG_INFO(d_logger, "Number of slots : "          << std::pow(2,FIXED_Q));
+      d_logger->info( "Number of samples data 0 : {}", n_data0_s);
+      d_logger->info( "Number of samples data 1 : {}", n_data1_s);
+      d_logger->info( "Number of samples cw : {}",     n_cw_s);
+      d_logger->info( "Number of samples delim : {}",  n_delim_s);
+      d_logger->info( "Number of slots : {}",          std::pow(2,FIXED_Q));
 
       // CW waveforms of different sizes
       n_cwquery_s   = (T1_D+T2_D+RN16_D)/sample_d;     //RN16
@@ -77,8 +77,8 @@ namespace gr {
       std::fill_n(cw_query.begin(), cw_query.size(), 1);
       std::fill_n(cw_ack.begin(), cw_ack.size(), 1);
 
-      GR_LOG_INFO(d_logger, "Carrier wave after a query transmission in samples : "     << n_cwquery_s);
-      GR_LOG_INFO(d_logger, "Carrier wave after ACK transmission in samples : "        << n_cwack_s);
+      d_logger->info( "Carrier wave after a query transmission in samples : {}",     n_cwquery_s);
+      d_logger->info( "Carrier wave after ACK transmission in samples : {}",        n_cwack_s);
 
       // Construct vectors (resize() default initialization is zero)
       data_0.resize(n_data0_s);
@@ -216,7 +216,7 @@ namespace gr {
       switch (reader_state->gen2_logic_status)
       {
         case START:
-          GR_LOG_INFO(d_debug_logger, "START");
+          d_logger->info( "START");
 
           memcpy(&out[written], &cw_ack[0], sizeof(float) * cw_ack.size() );
           written += cw_ack.size();
@@ -224,14 +224,14 @@ namespace gr {
           break;
 
         case POWER_DOWN:
-          GR_LOG_INFO(d_debug_logger, "POWER DOWN");
+          d_logger->info( "POWER DOWN");
           memcpy(&out[written], &p_down[0], sizeof(float) * p_down.size() );
           written += p_down.size();
           reader_state->gen2_logic_status = START;    
           break;
 
         case SEND_NAK_QR:
-          GR_LOG_INFO(d_debug_logger, "SEND NAK");
+          d_logger->info( "SEND NAK");
           memcpy(&out[written], &nak[0], sizeof(float) * nak.size() );
           written += nak.size();
           memcpy(&out[written], &cw[0], sizeof(float) * cw.size() );
@@ -240,7 +240,7 @@ namespace gr {
           break;
 
         case SEND_NAK_Q:
-          GR_LOG_INFO(d_debug_logger, "SEND NAK");
+          d_logger->info( "SEND NAK");
           memcpy(&out[written], &nak[0], sizeof(float) * nak.size() );
           written += nak.size();
           memcpy(&out[written], &cw[0], sizeof(float) * cw.size() );
@@ -255,8 +255,8 @@ namespace gr {
             std::cout << "Running " << std::endl;
           }*/
 
-          GR_LOG_INFO(d_debug_logger, "QUERY");
-          GR_LOG_INFO(d_debug_logger, "INVENTORY ROUND : " << reader_state->reader_stats.cur_inventory_round << " SLOT NUMBER : " << reader_state->reader_stats.cur_slot_number);
+          d_logger->info( "QUERY");
+          d_logger->info( "INVENTORY ROUND : {} SLOT NUMBER : {}", reader_state->reader_stats.cur_inventory_round, reader_state->reader_stats.cur_slot_number);
 
           reader_state->reader_stats.n_queries_sent +=1;  
           // Controls the other two blocks
@@ -288,7 +288,7 @@ namespace gr {
           break;
 
         case SEND_ACK:
-          GR_LOG_INFO(d_debug_logger, "SEND ACK");
+          d_logger->info( "SEND ACK");
           if (ninput_items[0] == RN16_BITS - 1)
           {
             // Controls the other two blocks
@@ -320,15 +320,15 @@ namespace gr {
           break;
 
         case SEND_CW:
-          GR_LOG_INFO(d_debug_logger, "SEND CW");
+          d_logger->info( "SEND CW");
           memcpy(&out[written], &cw_ack[0], sizeof(float) * cw_ack.size() );
           written += cw_ack.size();
           reader_state->gen2_logic_status = IDLE;      // Return to IDLE
           break;
 
         case SEND_QUERY_REP:
-          GR_LOG_INFO(d_debug_logger, "SEND QUERY_REP");
-          GR_LOG_INFO(d_debug_logger, "INVENTORY ROUND : " << reader_state->reader_stats.cur_inventory_round << " SLOT NUMBER : " << reader_state->reader_stats.cur_slot_number);
+          d_logger->info( "SEND QUERY_REP");
+          d_logger->info( "INVENTORY ROUND : {} SLOT NUMBER : {}", reader_state->reader_stats.cur_inventory_round, reader_state->reader_stats.cur_slot_number);
           // Controls the other two blocks
           reader_state->decoder_status = DECODER_DECODE_RN16;
           reader_state->gate_status    = GATE_SEEK_RN16;
@@ -344,7 +344,7 @@ namespace gr {
           break;
       
         case SEND_QUERY_ADJUST:
-          GR_LOG_INFO(d_debug_logger, "SEND QUERY_ADJUST");
+          d_logger->info( "SEND QUERY_ADJUST");
           // Controls the other two blocks
           reader_state->decoder_status = DECODER_DECODE_RN16;
           reader_state->gate_status    = GATE_SEEK_RN16;
@@ -443,4 +443,3 @@ namespace gr {
     }
   } /* namespace rfid */
 } /* namespace gr */
-

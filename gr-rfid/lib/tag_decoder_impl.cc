@@ -58,7 +58,7 @@ namespace gr {
       char_bits = (char *) malloc( sizeof(char) * 128);
 
       n_samples_TAG_BIT = TAG_BIT_D * s_rate / pow(10,6);      
-      GR_LOG_INFO(d_logger, "Number of samples of Tag bit : "<< n_samples_TAG_BIT);
+      d_logger->info( "Number of samples of Tag bit : {}", n_samples_TAG_BIT);
     }
 
     /*
@@ -255,7 +255,7 @@ namespace gr {
         // RN16 bits are passed to the next block for the creation of ACK message
         if (number_of_half_bits == 2*(RN16_BITS-1))
         {  
-          GR_LOG_INFO(d_debug_logger, "RN16 DECODED");
+          d_logger->info( "RN16 DECODED");
           RN16_bits  = tag_detection_RN16(RN16_samples_complex);
 
           for(int bit=0; bit<RN16_bits.size(); bit++)
@@ -350,7 +350,7 @@ namespace gr {
             {
               result += std::pow(2,7-i) * EPC_bits[104+i] ;
             }
-            GR_LOG_INFO(d_debug_logger, "EPC CORRECTLY DECODED, TAG ID : " << result);
+            d_logger->info( "EPC CORRECTLY DECODED, TAG ID : {}", result);
 
             // Save part of Tag's EPC message (EPC[104:111] in decimal) + number of reads
             std::map<int,int>::iterator it = reader_state->reader_stats.tag_reads.find(result);
@@ -383,12 +383,12 @@ namespace gr {
             }
 
             
-            GR_LOG_INFO(d_debug_logger, "EPC FAIL TO DECODE");  
+            d_logger->info( "EPC FAIL TO DECODE");  
           }
         }
         else
         {
-          GR_LOG_EMERG(d_debug_logger, "CHECK ME");  
+          d_logger->emerg( "CHECK ME");  
         }
         consumed = reader_state->n_samples_to_ungate;
       }
@@ -445,4 +445,3 @@ namespace gr {
     }
   } /* namespace rfid */
 } /* namespace gr */
-

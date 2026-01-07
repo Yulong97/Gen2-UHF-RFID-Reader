@@ -8,8 +8,10 @@ from gnuradio import analog
 from gnuradio import digital
 from gnuradio import qtgui
 import rfid
+print(dir(rfid))
 
-DEBUG = False
+
+DEBUG = True
 
 class reader_top_block(gr.top_block):
 
@@ -123,7 +125,7 @@ if __name__ == '__main__':
   main_block.start()
 
   while(1):
-    inp = raw_input("'Q' to quit \n")
+    inp = input("'Q' to quit \n")
     if (inp == "q" or inp == "Q"):
       break
 

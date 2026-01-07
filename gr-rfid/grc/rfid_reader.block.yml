@@ -1,0 +1,29 @@
+id: rfid_reader
+label: reader
+category: '[rfid]'
+
+templates:
+  imports: from gnuradio import rfid
+  make: rfid.reader(${sample_rate}, ${dac_rate})
+
+parameters:
+- id: sample_rate
+  label: Sample Rate
+  dtype: int
+  default: 2000000
+- id: dac_rate
+  label: DAC Rate
+  dtype: int
+  default: 1000000
+
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+
+outputs:
+- label: out
+  domain: stream
+  dtype: float
+
+file_format: 1

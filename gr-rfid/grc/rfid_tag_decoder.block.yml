@@ -1,0 +1,29 @@
+id: rfid_tag_decoder
+label: tag_decoder
+category: '[rfid]'
+
+templates:
+  imports: from gnuradio import rfid
+  make: rfid.tag_decoder(${sample_rate})
+
+parameters:
+- id: sample_rate
+  label: Sample Rate
+  dtype: int
+  default: 2000000
+
+inputs:
+- label: in
+  domain: stream
+  dtype: complex
+
+outputs:
+- label: out
+  domain: stream
+  dtype: float
+- label: out_debug
+  domain: stream
+  dtype: complex
+  optional: true
+
+file_format: 1
