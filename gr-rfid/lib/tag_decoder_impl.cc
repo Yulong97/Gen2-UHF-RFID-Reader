@@ -351,6 +351,10 @@ namespace gr {
               result += std::pow(2,7-i) * EPC_bits[104+i] ;
             }
             d_logger->info( "EPC CORRECTLY DECODED, TAG ID : {}", result);
+            
+            float rssi = std::abs(h_est);
+            float phase = std::arg(h_est);
+            d_logger->info("TAG MEASUREMENT | ID: {} | RSSI: {} | Phase: {}", result, rssi, phase);
 
             // Save part of Tag's EPC message (EPC[104:111] in decimal) + number of reads
             std::map<int,int>::iterator it = reader_state->reader_stats.tag_reads.find(result);
